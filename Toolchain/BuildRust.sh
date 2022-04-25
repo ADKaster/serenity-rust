@@ -10,6 +10,7 @@ echo "$DIR"
 PREFIX="$DIR/Local/rust/"
 BUILD="$DIR/../Build/"
 
+SED="sed"
 REALPATH="realpath"
 NPROC="nproc"
 
