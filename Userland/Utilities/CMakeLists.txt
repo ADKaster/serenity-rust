@@ -7,7 +7,7 @@ list(APPEND REQUIRED_TARGETS
     touch tr true umount uname uniq uptime w wc which whoami xargs yes less
 )
 list(APPEND RECOMMENDED_TARGETS
-    adjtime aplay abench asctl bt checksum chres cksum copy fortune gunzip gzip init install keymap lsirq lsof lspci man mknod mktemp
+    adjtime aplay abench asctl bt checksum chres cksum copy fortune gunzip gzip init install keymap lsof lspci man mknod mktemp
     nc netstat notify ntpquery open pape passwd pls printf pro shot tar tt unzip zip
 )
 
@@ -133,7 +133,6 @@ target_link_libraries(ln LibMain)
 target_link_libraries(logout LibMain)
 target_link_libraries(ls LibMain)
 target_link_libraries(lscpu LibMain)
-target_link_libraries(lsirq LibMain)
 target_link_libraries(lsof LibMain)
 target_link_libraries(lspci LibPCIDB LibMain)
 target_link_libraries(lsusb LibUSBDB LibMain)
@@ -234,3 +233,5 @@ target_link_libraries(xargs LibMain)
 target_link_libraries(xml LibMain LibXML)
 target_link_libraries(yes LibMain)
 target_link_libraries(zip LibArchive LibCompress LibCrypto LibMain)
+
+add_subdirectory(lsirq)
