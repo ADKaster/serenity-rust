@@ -1,8 +1,10 @@
 #![feature(rustc_private)]
+#![feature(core_ffi_c)]
 
 pub mod core;
 pub mod ipc;
 pub mod json;
+pub mod sys;
 
 extern "C" {
     pub fn dbgputstr(characters: *const u8, length: usize) -> i32;
