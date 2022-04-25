@@ -40,6 +40,7 @@ if(NOT COMMAND serenity_option)
     endmacro()
 endif()
 include(serenity_options)
+include(rust)
 
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)

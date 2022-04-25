@@ -1,0 +1,11 @@
+[package]
+name = "clipboard"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serenity = { path = "../../Libraries/serenity-rs", version = "*" }
+
+[[bin]]
+name = "ClipboardNG"
+path = "main.rs"
