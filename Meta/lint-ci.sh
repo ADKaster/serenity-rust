@@ -59,6 +59,14 @@ else
     ((FAILURES+=1))
 fi
 
+echo "Running Meta/lint-rustfmt.sh"
+if Meta/lint-rustfmt.sh --overwrite-inplace "$@" && git diff --exit-code; then
+    echo -e "[${GREEN}OK${NC}]: Meta/lint-rustfmt.sh"
+else
+    echo -e "[${RED}FAIL${NC}]: Meta/lint-rustfmt.sh"
+    ((FAILURES+=1))
+fi
+
 # lint-ports.py is handled separately as it scans all Ports/ all the time.
 # This is fine when running lint-ci.sh from the PR validation workflow.
 # However when running from the pre-commit workflow it takes an excessive

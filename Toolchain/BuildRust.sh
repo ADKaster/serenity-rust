@@ -60,7 +60,7 @@ git pull
 
 export DESTDIR="$PREFIX"
 
-python3 ./x.py install -i --stage 1 --target x86_64-unknown-serenity compiler/rustc library/std cargo
+python3 ./x.py install -i --stage 1 --target x86_64-unknown-serenity compiler/rustc library/std cargo rustfmt
 
 # Make sure we have proc_macros available for host with a matching version, in case the developer doesn't have
 # a nightly installed that they keep up to date. If adding more/different hosts here, update config.toml.in [build.target]
