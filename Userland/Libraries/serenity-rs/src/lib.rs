@@ -2,6 +2,7 @@
 
 pub mod core;
 pub mod ipc;
+pub mod json;
 
 extern "C" {
     pub fn dbgputstr(characters: *const u8, length: usize) -> i32;
