@@ -1,0 +1,11 @@
+[package]
+name = "lsirq"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serenity = { path = "../../Libraries/serenity-rs", version = "*" }
+
+[[bin]]
+name = "lsirq"
+path = "main.rs"
