@@ -319,6 +319,27 @@ impl std::fmt::Display for Value {
 }
 
 impl Value {
+    pub fn as_string(&self) -> &String {
+        match self {
+            Value::String(value) => value,
+            _ => panic!(),
+        }
+    }
+
+    pub fn as_array(&self) -> &Vec<Value> {
+        match self {
+            Value::Array(array) => array,
+            _ => panic!(),
+        }
+    }
+
+    pub fn as_object(&self) -> &HashMap<String, Value> {
+        match self {
+            Value::Object(object) => object,
+            _ => panic!(),
+        }
+    }
+
     pub fn to_string(&self) -> String {
         match &self {
             Value::Null => String::from("null"),
