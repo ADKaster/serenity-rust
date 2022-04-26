@@ -1,0 +1,10 @@
+[package]
+name = "ipc_proc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[lib]
+proc-macro = true
+crate-type = ["proc-macro"]

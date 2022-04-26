@@ -3,6 +3,10 @@
 version = 3
 
 [[package]]
+name = "ipc_proc"
+version = "0.1.0"
+
+[[package]]
 name = "lsirq"
 version = "0.1.0"
 dependencies = [
@@ -12,3 +16,6 @@ dependencies = [
 [[package]]
 name = "serenity"
 version = "0.1.0"
+dependencies = [
+ "ipc_proc",
+]

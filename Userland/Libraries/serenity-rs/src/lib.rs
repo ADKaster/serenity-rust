@@ -1,5 +1,6 @@
 #![feature(rustc_private)]
 #![feature(core_ffi_c)]
+#![feature(const_for)]
 
 pub mod core;
 pub mod ipc;
@@ -20,4 +21,15 @@ macro_rules! dbgln {
         s.push('\n');
         unsafe { serenity::dbgputstr(s.as_ptr(), s.len()) }
     };
+}
+
+// Types for IPC files.
+pub mod Core {
+    use std::sync::Arc;
+
+    pub type AnonymousBuffer = Arc<crate::core::AnonymousBuffer>;
+}
+
+pub mod IPC {
+    pub use crate::ipc::*;
 }
