@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-use serenity::sys;
-use serenity::json;
+use serenity::{json, sys};
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     sys::pledge("stdio rpath")?;
@@ -22,7 +21,13 @@ pub fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let controller = handler.get("controller").unwrap();
                 let call_count = handler.get("call_count").unwrap();
 
-                println!("{:>4}: {:10} {:10}  {:30}", interrupt_line.to_string(), call_count.to_string(), controller.to_string(), purpose.to_string());
+                println!(
+                    "{:>4}: {:10} {:10}  {:30}",
+                    interrupt_line.to_string(),
+                    call_count.to_string(),
+                    controller.to_string(),
+                    purpose.to_string()
+                );
             }
         }
     }

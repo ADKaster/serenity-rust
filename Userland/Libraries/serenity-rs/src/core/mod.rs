@@ -33,20 +33,27 @@ impl AnonymousBuffer {
     }
 
     pub fn from_fd(fd: i32, size: usize) -> std::io::Result<Arc<AnonymousBuffer>> {
-        let data = unsafe { libc::mmap(0 as *mut c_void, size, libc::PROT_READ | libc::PROT_WRITE, libc::MAP_SHARED, fd, 0) };
+        let data = unsafe {
+            libc::mmap(
+                0 as *mut c_void,
+                size,
+                libc::PROT_READ | libc::PROT_WRITE,
+                libc::MAP_SHARED,
+                fd,
+                0,
+            )
+        };
         if data == libc::MAP_FAILED {
             Err(std::io::Error::last_os_error())
         } else {
-            Ok(Arc::new(AnonymousBuffer {
-                fd,
-                size,
-                data,
-            }))
+            Ok(Arc::new(AnonymousBuffer { fd, size, data }))
         }
     }
 
     pub fn is_valid(&self) -> bool { self.fd != -1 }
+
     pub fn size(&self) -> usize { self.size }
+
     pub fn fd(&self) -> i32 { self.fd }
 
     pub fn as_mut_slice(&mut self) -> &mut [u8] {

@@ -4,27 +4,35 @@
 
 extern crate libc;
 
-use std::io::{Read, Write, Result, BufReader};
-use std::{mem, os, thread};
-use std::mem::transmute;
-use std::os::unix::net::{UnixStream, UnixListener};
 use std::collections::{HashMap, VecDeque};
-use std::ffi::{c_void};
+use std::ffi::c_void;
 use std::io::ErrorKind::UnexpectedEof;
+use std::io::{BufReader, Read, Result, Write};
+use std::mem::transmute;
 use std::os::unix::io::{AsRawFd, FromRawFd};
-use std::time::Duration;
+use std::os::unix::net::{UnixListener, UnixStream};
 use std::rc::Rc;
-use std::sync::{Mutex, Arc};
+use std::sync::{Arc, Mutex};
+use std::time::Duration;
+use std::{mem, os, thread};
 
 use serenity::core::AnonymousBuffer;
-use serenity::dbgln;
+use serenity::{dbgln, ipc};
 
 #[derive(Debug)]
 enum ServerMessage {
     Disconnected,
     GetClipboardData,
-    SetClipboardData { data: Arc<AnonymousBuffer>, mime_type: String, metadata: HashMap<String, String> },
-    GetClipboardDataResponse { data: Arc<AnonymousBuffer>, mime_type: String, metadata: HashMap<String, String> },
+    SetClipboardData {
+        data: Arc<AnonymousBuffer>,
+        mime_type: String,
+        metadata: HashMap<String, String>,
+    },
+    GetClipboardDataResponse {
+        data: Arc<AnonymousBuffer>,
+        mime_type: String,
+        metadata: HashMap<String, String>,
+    },
 }
 
 enum ClientMessage {
@@ -55,10 +63,10 @@ pub fn hexdump(bytes: &[u8], nread: usize) {
 }
 
 fn as_u32_le(array: &[u8; 4]) -> u32 {
-    ((array[0] as u32) << 0) +
-        ((array[1] as u32) << 8) +
-        ((array[2] as u32) << 16) +
-        ((array[3] as u32) << 24)
+    ((array[0] as u32) << 0)
+        + ((array[1] as u32) << 8)
+        + ((array[2] as u32) << 16)
+        + ((array[3] as u32) << 24)
 }
 
 fn read_u32(bytes: &mut VecDeque<u8>) -> Option<u32> {
@@ -70,16 +78,18 @@ fn read_u32(bytes: &mut VecDeque<u8>) -> Option<u32> {
 }
 
 impl ConnectionFromClient {
-    pub fn fd(&self) -> i32 {
-        self.stream.as_raw_fd()
-    }
+    pub fn fd(&self) -> i32 { self.stream.as_raw_fd() }
 
     pub fn new(stream: UnixStream) -> ConnectionFromClient {
-        ConnectionFromClient { stream, messages: VecDeque::new(), bytes: VecDeque::new() }
+        ConnectionFromClient {
+            stream,
+            messages: VecDeque::new(),
+            bytes: VecDeque::new(),
+        }
     }
 
     fn decode_message(&self, mut bytes: VecDeque<u8>) -> Option<ServerMessage> {
-        let mut decoder = serenity::ipc::Decoder::with_bytes(&mut bytes, self.stream.as_raw_fd());
+        let mut decoder = ipc::Decoder::with_bytes(&mut bytes, self.stream.as_raw_fd());
 
         let magic = decoder.decode_u32()?;
 
@@ -103,11 +113,13 @@ impl ConnectionFromClient {
                 let data = decoder.decode_anonymous_buffer()?;
                 let mime_type = decoder.decode_string()?;
                 let metadata = decoder.decode_dictionary()?;
-                Some(ServerMessage::SetClipboardData { data, mime_type, metadata })
+                Some(ServerMessage::SetClipboardData {
+                    data,
+                    mime_type,
+                    metadata,
+                })
             }
-            _ => {
-                None
-            }
+            _ => None,
         }
     }
 
@@ -155,9 +167,13 @@ impl ConnectionFromClient {
 
     pub fn send_message(&mut self, message: ServerMessage) -> std::io::Result<()> {
         let mut buffer = Vec::<u8>::new();
-        let mut encoder = serenity::ipc::Encoder::new(&mut buffer, 1329211611, self.stream.as_raw_fd());
+        let mut encoder = ipc::Encoder::new(&mut buffer, 1329211611, self.stream.as_raw_fd());
         match &message {
-            ServerMessage::GetClipboardDataResponse { data, metadata, mime_type } => {
+            ServerMessage::GetClipboardDataResponse {
+                data,
+                metadata,
+                mime_type,
+            } => {
                 encoder.encode_u32(2); // MessageID::GetClipboardDataResponse
                 encoder.encode_anonymous_buffer(data);
                 encoder.encode_string(mime_type);
@@ -178,7 +194,10 @@ impl ConnectionFromClient {
     }
 }
 
-fn handle_client(stream: std::os::unix::net::UnixStream, global_shared_state: &mut Arc<Mutex<GlobalSharedState>>) -> std::io::Result<()> {
+fn handle_client(
+    stream: std::os::unix::net::UnixStream,
+    global_shared_state: &mut Arc<Mutex<GlobalSharedState>>,
+) -> std::io::Result<()> {
     let mut connection_from_client = ConnectionFromClient::new(stream);
 
     while let Ok(message) = connection_from_client.wait_for_message() {
@@ -192,7 +211,11 @@ fn handle_client(stream: std::os::unix::net::UnixStream, global_shared_state: &m
                     metadata: global_shared_state.metadata.clone(),
                 })?;
             }
-            ServerMessage::SetClipboardData { data, mime_type, metadata } => {
+            ServerMessage::SetClipboardData {
+                data,
+                mime_type,
+                metadata,
+            } => {
                 dbgln!("SetClipboardData");
                 let mut global_shared_state = global_shared_state.lock().unwrap();
                 global_shared_state.data = data;
@@ -220,7 +243,9 @@ fn main() -> std::io::Result<()> {
             fd = number.parse().unwrap();
             // NOTE: We have to make the socket non-blocking or UnixListener will fall apart on the first EAGAIN.
             let value = 0;
-            unsafe { libc::ioctl(fd, libc::FIONBIO, &value); }
+            unsafe {
+                libc::ioctl(fd, libc::FIONBIO, &value);
+            }
         } else {
             return Ok(());
         }

@@ -1,9 +1,9 @@
 extern crate libc;
 
-use crate::core;
-
 use std::collections::{HashMap, VecDeque};
 use std::sync::Arc;
+
+use crate::core;
 
 pub struct Encoder<'a> {
     output: &'a mut Vec<u8>,
@@ -76,21 +76,21 @@ impl<'a> Encoder<'a> {
 }
 
 fn as_u32_le(array: &[u8; 4]) -> u32 {
-    ((array[0] as u32) << 0) +
-        ((array[1] as u32) << 8) +
-        ((array[2] as u32) << 16) +
-        ((array[3] as u32) << 24)
+    ((array[0] as u32) << 0)
+        + ((array[1] as u32) << 8)
+        + ((array[2] as u32) << 16)
+        + ((array[3] as u32) << 24)
 }
 
 fn as_u64_le(array: &[u8; 8]) -> u64 {
-    ((array[0] as u64) << 0) +
-        ((array[1] as u64) << 8) +
-        ((array[2] as u64) << 16) +
-        ((array[3] as u64) << 24) +
-        ((array[4] as u64) << 32) +
-        ((array[5] as u64) << 40) +
-        ((array[6] as u64) << 48) +
-        ((array[7] as u64) << 56)
+    ((array[0] as u64) << 0)
+        + ((array[1] as u64) << 8)
+        + ((array[2] as u64) << 16)
+        + ((array[3] as u64) << 24)
+        + ((array[4] as u64) << 32)
+        + ((array[5] as u64) << 40)
+        + ((array[6] as u64) << 48)
+        + ((array[7] as u64) << 56)
 }
 
 fn receive_fd(fd: i32) -> std::io::Result<i32> {

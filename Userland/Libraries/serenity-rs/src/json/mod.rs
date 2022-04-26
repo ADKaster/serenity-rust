@@ -24,7 +24,6 @@ pub enum Number {
     Float64(f64),
 }
 
-
 #[derive(Debug)]
 pub enum ParseError {
     NotImplemented,
@@ -77,7 +76,6 @@ impl<'a> JsonParser<'a> {
 
     fn parse_object(&mut self) -> Result<Value, ParseError> {
         self.must_consume('{')?;
-
 
         let mut object = HashMap::new();
 
@@ -215,8 +213,10 @@ impl<'a> JsonParser<'a> {
     fn skip_whitespace(&mut self) {
         loop {
             match self.input.peek() {
-                Some(' ' | '\n' | '\r' | '\t') => { self.input.next(); }
-                _ => { break; }
+                Some(' ' | '\n' | '\r' | '\t') => {
+                    self.input.next();
+                }
+                _ => break,
             }
         }
     }
@@ -306,7 +306,9 @@ impl<'a> JsonParser<'a> {
 }
 
 pub fn parse(input: &str) -> Result<Value, ParseError> {
-    let mut parser = JsonParser { input: &mut input.chars().peekable() };
+    let mut parser = JsonParser {
+        input: &mut input.chars().peekable(),
+    };
     parser.parse()
 }
 
@@ -328,12 +330,10 @@ impl Value {
                     String::from("false")
                 }
             }
-            Value::Number(number) => {
-                match number {
-                    Number::Integer64(value) => format!("{}", value),
-                    Number::Float64(value) => format!("{}", value),
-                }
-            }
+            Value::Number(number) => match number {
+                Number::Integer64(value) => format!("{}", value),
+                Number::Float64(value) => format!("{}", value),
+            },
             Value::Array(array) => {
                 let mut string = String::new();
                 string.push('[');

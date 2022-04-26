@@ -12,7 +12,6 @@ pub fn pledge(promises: &str) -> std::io::Result<()> {
     }
 }
 
-
 pub fn pledge_with_execpromises(promises: &str, execpromises: &str) -> std::io::Result<()> {
     let promises_c_string = CString::new(promises).unwrap();
     let promises_ptr = promises_c_string.as_ptr();
