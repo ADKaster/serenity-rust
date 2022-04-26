@@ -1,7 +1,10 @@
 #![feature(rustc_private)]
 #![feature(core_ffi_c)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 
 pub mod core;
+pub mod gfx;
 pub mod ipc;
 pub mod json;
 pub mod sys;
